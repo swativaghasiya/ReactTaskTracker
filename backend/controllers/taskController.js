@@ -13,6 +13,12 @@ exports.getTaskById = async (req, res) => {
 
 exports.createTask = async (req, res) => {
     const { title, dueDate } = req.body;
+
+    // ✅ Add this validation at the top
+    if (!title) {
+        return res.status(400).json({ message: 'Title is required' });
+    }
+
     const task = new Task({ title, dueDate, userId: req.user.userId });
     await task.save();
     res.status(201).json(task);
