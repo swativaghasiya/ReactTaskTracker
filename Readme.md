@@ -52,6 +52,7 @@ A full-stack task tracking application built with:
 ```bash
 git clone https://github.com/swativaghasiya/ReactTaskTracker.git
 cd task-tracker
+npm start
 ```
 
 # 🛠️ Task Tracker Backend
