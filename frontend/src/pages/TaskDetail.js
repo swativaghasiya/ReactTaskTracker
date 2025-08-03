@@ -19,7 +19,7 @@ const TaskDetail = () => {
       if (res.ok) {
         setTask(data);
       } else {
-        setError(data.message || 'Task not found');
+        setError(data.message || 'Failed to load tasks.');
       }
     } catch (err) {
       setError('Error fetching task');

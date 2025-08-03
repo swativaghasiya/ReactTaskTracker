@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
+  const [filter, setFilter] = useState('all'); // "all" | "completed"
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
 
   const fetchTasks = async () => {
+    setLoading(true);
     try {
       const res = await fetch('http://localhost:5000/api/tasks', {
         headers: {
@@ -13,9 +16,9 @@ const Dashboard = () => {
         },
       });
       const data = await res.json();
-      if (res.ok) setTasks(data);
+      setTasks(data || []);
     } catch (err) {
-      console.error('Failed to load tasks');
+      console.error('Failed to fetch tasks');
     } finally {
       setLoading(false);
     }
@@ -25,33 +28,67 @@ const Dashboard = () => {
     fetchTasks();
   }, []);
 
+  const filteredTasks = tasks.filter((task) => {
+    const matchesFilter =
+      filter === 'all' || (filter === 'completed' && task.completed);
+    const matchesSearch = task.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
   return (
     <div style={styles.container}>
-      <h1 style={styles.heading}>📋 Your Tasks</h1>
-      <Link to="/task/new" style={styles.createBtn}>➕ Create New Task</Link>
+      <h2 style={styles.heading}>📋 Your Tasks</h2>
+
+      <div style={styles.toolbar}>
+        <input
+          type="text"
+          placeholder="🔍 Search by title..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={styles.search}
+        />
+
+        <div style={styles.filterBtns}>
+          <button
+            onClick={() => setFilter('all')}
+            style={{
+              ...styles.filterBtn,
+              backgroundColor: filter === 'all' ? '#007bff' : '#ccc',
+            }}
+          >
+            All
+          </button>
+          <button
+            onClick={() => setFilter('completed')}
+            style={{
+              ...styles.filterBtn,
+              backgroundColor: filter === 'completed' ? '#007bff' : '#ccc',
+            }}
+          >
+            Completed
+          </button>
+        </div>
+      </div>
 
       {loading ? (
         <p>Loading...</p>
-      ) : tasks.length === 0 ? (
+      ) : filteredTasks.length === 0 ? (
         <p>No tasks found.</p>
       ) : (
-        <div style={styles.cardGrid}>
-          {tasks.map((task) => (
-            <div key={task._id} style={styles.card}>
-              <h3 style={styles.taskTitle}>
-                <Link to={`/task/${task._id}`} style={styles.taskLink}>
-                  {task.title}
-                </Link>
-              </h3>
-              <p>
-                Due: {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : '—'}
-              </p>
-              <p style={{ color: task.completed ? 'green' : 'crimson' }}>
-                {task.completed ? '✅ Completed' : '❌ Not Completed'}
-              </p>
-            </div>
+        <ul style={styles.list}>
+          {filteredTasks.map((task) => (
+            <li key={task._id} style={styles.item}>
+              <Link to={`/task/${task._id}`} style={styles.link}>
+                {task.title}
+              </Link>
+              <span style={{ color: task.completed ? 'green' : 'crimson' }}>
+                {task.completed ? '✅' : '❌'}
+              </span>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </div>
   );
@@ -59,40 +96,55 @@ const Dashboard = () => {
 
 const styles = {
   container: {
-    padding: '20px',
-    maxWidth: '900px',
+    maxWidth: '600px',
     margin: '0 auto',
+    padding: '20px',
   },
   heading: {
-    fontSize: '2rem',
-    marginBottom: '10px',
-  },
-  createBtn: {
-    display: 'inline-block',
-    padding: '10px 15px',
-    backgroundColor: '#007bff',
-    color: '#fff',
-    textDecoration: 'none',
-    borderRadius: '8px',
+    fontSize: '1.8rem',
     marginBottom: '20px',
   },
-  cardGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: '15px',
+  toolbar: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    marginBottom: '20px',
   },
-  card: {
-    padding: '15px',
-    borderRadius: '10px',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+  search: {
+    padding: '10px',
+    borderRadius: '6px',
+    border: '1px solid #ccc',
+    fontSize: '16px',
+  },
+  filterBtns: {
+    display: 'flex',
+    gap: '10px',
+  },
+  filterBtn: {
+    flex: 1,
+    padding: '10px',
+    border: 'none',
+    borderRadius: '6px',
+    color: '#fff',
+    cursor: 'pointer',
+  },
+  list: {
+    listStyle: 'none',
+    padding: 0,
+  },
+  item: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '12px',
+    border: '1px solid #ccc',
+    borderRadius: '8px',
+    marginBottom: '10px',
     backgroundColor: '#f9f9f9',
   },
-  taskTitle: {
-    margin: '0 0 10px',
-  },
-  taskLink: {
+  link: {
     textDecoration: 'none',
     color: '#333',
+    fontWeight: '500',
   },
 };
 

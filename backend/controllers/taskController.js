@@ -7,7 +7,7 @@ exports.getAllTasks = async (req, res) => {
 
 exports.getTaskById = async (req, res) => {
     const task = await Task.findOne({ _id: req.params.id, userId: req.user.userId });
-    if (!task) return res.status(404).json({ message: 'Task not found' });
+    if (!task) return res.status(404).json({ message: 'Failed to load tasks.' });
     res.json(task);
 };
 
@@ -27,13 +27,13 @@ exports.updateTask = async (req, res) => {
         { new: true }
     );
 
-    if (!task) return res.status(404).json({ message: 'Task not found or unauthorized' });
+    if (!task) return res.status(404).json({ message: 'Failed to load tasks or unauthorized' });
 
     res.json(task);
 };
 
 exports.deleteTask = async (req, res) => {
     const task = await Task.findOneAndDelete({ _id: req.params.id, userId: req.user.userId });
-    if (!task) return res.status(404).json({ message: 'Task not found or unauthorized' });
+    if (!task) return res.status(404).json({ message: 'Failed to load tasks or unauthorized' });
     res.json({ message: 'Task deleted' });
 };
