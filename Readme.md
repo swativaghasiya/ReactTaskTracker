@@ -136,7 +136,7 @@ This is the **React frontend** for the Task Tracker app. It lets users sign up, 
 
 ## 📁 Folder Structure
 
-###frontend/
+### frontend/
 
 - src/
   - auth/ # Login/logout utils
