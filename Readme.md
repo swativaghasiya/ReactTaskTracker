@@ -47,6 +47,13 @@ A full-stack task tracking application built with:
 - Node.js installed
 - MongoDB running locally (or use MongoDB Atlas)
 
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/swativaghasiya/ReactTaskTracker.git
+cd task-tracker
+```
+
 # 🛠️ Task Tracker Backend
 
 This is the **backend API** for the Task Tracker application built with **Node.js**, **Express**, and **MongoDB**. It handles user authentication, task CRUD operations, and JWT-based route protection.
