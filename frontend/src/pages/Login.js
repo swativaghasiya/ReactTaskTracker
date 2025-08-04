@@ -33,28 +33,83 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+    <div style={styles.container}>
+      <form onSubmit={handleLogin} style={styles.card}>
+        <h2 style={styles.title}>Login</h2>
+
         <input
           type="email"
           placeholder="Email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-        /><br/>
+          style={styles.input}
+        />
+
         <input
           type="password"
           placeholder="Password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-        /><br/>
-        <button type="submit">Log In</button>
+          style={styles.input}
+        />
+
+        <button type="submit" style={styles.button}>
+          Log In
+        </button>
+
+        {error && <p style={styles.error}>{error}</p>}
       </form>
-      {error && <p style={{color: 'red'}}>{error}</p>}
     </div>
   );
+};
+
+const styles = {
+  container: {
+    height: '100vh',
+    background: '#f0f2f5',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  card: {
+    background: '#fff',
+    padding: '2rem',
+    borderRadius: '10px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+    width: '100%',
+    maxWidth: '400px',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  title: {
+    textAlign: 'center',
+    marginBottom: '1.5rem',
+    color: '#333',
+  },
+  input: {
+    padding: '10px',
+    marginBottom: '1rem',
+    borderRadius: '5px',
+    border: '1px solid #ccc',
+    fontSize: '16px',
+  },
+  button: {
+    padding: '10px',
+    background: '#007bff',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    fontSize: '16px',
+    cursor: 'pointer',
+    transition: 'background 0.3s ease',
+  },
+  error: {
+    color: 'red',
+    marginTop: '1rem',
+    textAlign: 'center',
+  },
 };
 
 export default Login;
