@@ -75,7 +75,7 @@ const Dashboard = () => {
       {loading ? (
         <p>Loading...</p>
       ) : filteredTasks.length === 0 ? (
-        <p>Failed to load tasks.</p>
+        <p>No tasks.</p>
       ) : (
         <ul style={styles.list}>
           {filteredTasks.map((task) => (

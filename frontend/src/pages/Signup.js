@@ -27,7 +27,10 @@ const Signup = () => {
     if (!res.ok) {
       setError(data.message || 'Signup failed');
     } else {
+
       saveToken(data.token);
+      alert("Signup successful! You are now logged in.");
+
       navigate('/');
     }
   } catch (err) {
