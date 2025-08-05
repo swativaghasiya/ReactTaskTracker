@@ -1,40 +1,41 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { saveToken } from '../auth';
+import { useAuth } from '../context/authContext'; // ✅ Import useAuth
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth(); // ✅ Access login() from context
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
- const handleLogin = async (e) => {
-  e.preventDefault();
-  setError('');
-  console.log('Submitting login:', { email, password });
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    console.log('Submitting login:', { email, password });
 
-  try {
-    const res = await fetch('http://localhost:5000/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      setError(data.message || 'Login failed');
-    } else {
-      saveToken(data.token);
-      console.log('Login successful, navigating to /');
-      navigate('/'); // ✅ make sure this line runs
+      if (!res.ok) {
+        setError(data.message || 'Login failed');
+      } else {
+        await login(data.token); // ✅ Use context login method
+        console.log('Login successful, navigating to /');
+        navigate('/');
+      }
+    } catch (err) {
+      console.error('Login Error:', err);
+      setError('Something went wrong');
     }
-  } catch (err) {
-    console.error('Login Error:', err);
-    setError('Something went wrong');
-  }
-};
-
+  };
 
   return (
     <div style={styles.container}>
