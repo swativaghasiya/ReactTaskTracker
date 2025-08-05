@@ -8,29 +8,35 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSignup = async (e) => {
-    e.preventDefault();
-    setError('');
+ const handleSignup = async (e) => {
+  e.preventDefault();
+  setError('');
+  console.log('Submitting signup:', { email, password });
 
-    try {
-      const res = await fetch('http://localhost:5000/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+  try {
+    const res = await fetch('http://localhost:5000/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
 
-      const data = await res.json();
+    console.log('Response received:', res); // ADD THIS
 
-      if (!res.ok) {
-        setError(data.message || 'Signup failed');
-      } else {
-        saveToken(data.token);
-        navigate('/');
-      }
-    } catch (err) {
-      setError('Something went wrong');
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.message || 'Signup failed');
+    } else {
+      saveToken(data.token);
+      navigate('/');
     }
-  };
+  } catch (err) {
+    console.error('Signup Error:', err); // ADD THIS
+    setError('Something went wrong');
+  }
+};
+
+
 
   return (
     <div style={styles.container}>
